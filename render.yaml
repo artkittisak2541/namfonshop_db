@@ -1,12 +1,8 @@
 services:
   - type: web
-    name: namfonshop
+    name: namfon-shop
     env: docker
     plan: free
-    region: singapore
-    dockerfilePath: ./Dockerfile
-    buildCommand: ""
-    startCommand: apache2-foreground
-    envVars:
-      - key: HTTP_HOST
-        value: render
+    repo: https://github.com/artkittisak2541/namfonshop_db
+    branch: main
+    dockerfilePath: Dockerfile
