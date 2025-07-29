@@ -1,12 +1,10 @@
 <?php
 session_start();
 require 'db.php';
-
 if (isset($_SESSION['user'])) {
   header("Location: shop.php");
   exit();
 }
-
 $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $username = $_POST['username'];
