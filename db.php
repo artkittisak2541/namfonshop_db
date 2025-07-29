@@ -13,6 +13,7 @@ if ($_SERVER['HTTP_HOST'] === 'localhost') {
   }
 
   $conn->set_charset("utf8mb4");
+  if (!defined('DB_TYPE')) define('DB_TYPE', 'mysql');
 
 } else {
   // 👉 ใช้งานบน Render - PostgreSQL
@@ -28,7 +29,7 @@ if ($_SERVER['HTTP_HOST'] === 'localhost') {
     die("❌ PostgreSQL Connection failed (Render): " . pg_last_error());
   }
 
-  // ตั้ง encoding เป็น UTF-8
   pg_query($conn, "SET client_encoding TO 'UTF8'");
+  if (!defined('DB_TYPE')) define('DB_TYPE', 'pgsql');
 }
 ?>
