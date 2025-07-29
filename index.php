@@ -13,30 +13,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $password = $_POST['password'];
   $remember = isset($_POST['remember']);
 
-  // ✅ ใช้ pg_query_params เพื่อป้องกัน SQL Injection
-  $result = pg_query_params($conn, "SELECT * FROM users WHERE username = $1", [$username]);
+  if (DB_TYPE === 'mysql') {
+    // ✅ MySQL
+    $stmt = $conn->prepare("SELECT * FROM users WHERE username = ?");
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $user = $result->fetch_assoc();
+  } else {
+    // ✅ PostgreSQL
+    $result = pg_query_params($conn, "SELECT * FROM users WHERE username = $1", [$username]);
+    $user = pg_fetch_assoc($result);
+  }
 
-  if ($result && pg_num_rows($result) > 0) {
-    $user = pg_fetch_assoc($result);  // ดึงข้อมูลผู้ใช้
-
+  if ($user) {
     if (password_verify($password, $user['password'])) {
       $_SESSION['user'] = $user;
+
       if ($remember) {
         setcookie("remember_user", $username, time() + (86400 * 30), "/");
       } else {
         setcookie("remember_user", "", time() - 3600, "/");
       }
+
       header("Location: shop.php");
       exit();
     } else {
-      $error = "❌ ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง";
+      $error = "❌ รหัสผ่านไม่ถูกต้อง";
     }
   } else {
-    $error = "❌ ไม่พบบัญชีผู้ใช้นี้";
+    $error = "❌ ไม่พบผู้ใช้นี้";
   }
 }
 ?>
-
 
 <!-- HTML and CSS content omitted for brevity (included in next cell in full version) -->
 
