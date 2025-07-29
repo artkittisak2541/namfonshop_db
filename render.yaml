@@ -1,8 +1,12 @@
 services:
   - type: web
-    name: namfon-shop
+    name: namfonshop
     env: docker
     plan: free
-    autoDeploy: true
+    region: singapore
+    dockerfilePath: ./Dockerfile
     buildCommand: ""
-    startCommand: "apache2-foreground"
+    startCommand: apache2-foreground
+    envVars:
+      - key: HTTP_HOST
+        value: render
